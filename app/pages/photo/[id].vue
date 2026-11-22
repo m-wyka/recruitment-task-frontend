@@ -48,20 +48,6 @@ useHead(() => ({
 
     <MetadataDisplay :info-url="photoInfoUrl" />
 
-    <!--
-      ===========================================================================
-      TODO — zadanie dla kandydata
-
-      W tym miejscu powinien zostać dodany komponent (np. CommentsSection.vue),
-      który pobierze komentarze z endpointu /api/comments.json i wyświetli je
-      dla bieżącego zdjęcia (photoId).
-
-      Wskazówki:
-      - endpoint zwraca tablicę obiektów z polem `photoId`
-      - filtruj po `photoId` równym aktualnemu identyfikatorowi zdjęcia
-      - zadbaj o stany: ładowanie, błąd, brak komentarzy
-      ===========================================================================
-    -->
     <PhotoCommentsSection :photo-id="photoId" />
   </section>
 </template>
