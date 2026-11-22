@@ -84,7 +84,7 @@ const isLoading = computed(
           loading="lazy"
           class="w-16 h-16 shrink-0 rounded-xl object-cover"
         />
-        <div class="flex flex-col gap-2">
+        <div class="flex flex-col gap-2 min-w-0">
           <div class="flex items-baseline gap-4">
             <span class="font-semibold text-gray-800">
               {{ comment.author }}
@@ -93,7 +93,7 @@ const isLoading = computed(
               {{ formatCommentDate(comment.createdAt) }}
             </time>
           </div>
-          <p class="text-gray-800">{{ comment.content }}</p>
+          <p class="break-words text-gray-800">{{ comment.content }}</p>
         </div>
       </li>
     </ul>
