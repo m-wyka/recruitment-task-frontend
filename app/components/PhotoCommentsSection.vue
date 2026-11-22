@@ -16,25 +16,25 @@
 const props = defineProps({
   photoId: {
     type: String,
-    required: true
-  }
-})
+    required: true,
+  },
+});
 
-const { data, status, error, refresh } = useFetch('/api/comments.json', {
+const { data, status, error, refresh } = useFetch("/api/comments.json", {
   // Jeden plik dla wszystkich zdjęć — wspólny klucz, filtrujemy lokalnie.
-  key: 'comments',
+  key: "comments",
   // W `nuxt dev` SSR nie widzi plików z public/ (404), więc pobieramy po stronie klienta.
   server: false,
-  default: () => []
-})
+  default: () => [],
+});
 
-const comments = computed(() => getCommentsForPhoto(data.value, props.photoId))
+const comments = computed(() => getCommentsForPhoto(data.value, props.photoId));
 
 // Przy `server: false` serwer renderuje komponent w stanie `idle`. Traktujemy go
 // jak ładowanie, żeby przed pobraniem danych nie mignął pusty stan.
 const isLoading = computed(
-  () => status.value === 'idle' || status.value === 'pending'
-)
+  () => status.value === "idle" || status.value === "pending",
+);
 </script>
 
 <template>
@@ -84,8 +84,8 @@ const isLoading = computed(
           loading="lazy"
           class="w-16 h-16 shrink-0 rounded-xl object-cover"
         />
-        <div class="flex flex-col gap-2 min-w-0">
-          <div class="flex items-baseline gap-4">
+        <div class="flex flex-col gap-2 min-w-0 flex-1">
+          <div class="flex flex-wrap items-baseline gap-x-4 gap-y-1">
             <span class="font-semibold text-gray-800">
               {{ comment.author }}
             </span>
