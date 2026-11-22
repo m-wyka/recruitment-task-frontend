@@ -20,7 +20,7 @@ const props = defineProps({
   }
 })
 
-const { data } = useFetch('/api/comments.json', {
+const { data, status, error, refresh } = useFetch('/api/comments.json', {
   // Jeden plik dla wszystkich zdjęć — wspólny klucz, filtrujemy lokalnie.
   key: 'comments',
   // W `nuxt dev` SSR nie widzi plików z public/ (404), więc pobieramy po stronie klienta.
@@ -33,6 +33,12 @@ const comments = computed(() =>
     .filter((comment) => comment.photoId === props.photoId)
     .sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt))
 )
+
+// Przy `server: false` serwer renderuje komponent w stanie `idle`. Traktujemy go
+// jak ładowanie, żeby przed pobraniem danych nie mignął pusty stan.
+const isLoading = computed(
+  () => status.value === 'idle' || status.value === 'pending'
+)
 </script>
 
 <template>
@@ -44,7 +50,35 @@ const comments = computed(() =>
       Komentarze
     </h2>
 
-    <div class="flex flex-col gap-6">
+    <div
+      v-if="isLoading"
+      class="flex items-center gap-3 text-gray-500"
+      role="status"
+      aria-live="polite"
+    >
+      <span
+        class="w-4 h-4 border-2 border-gray-200 border-t-blue-600 rounded-full animate-spin"
+        aria-hidden="true"
+      />
+      Ładowanie komentarzy...
+    </div>
+
+    <div v-else-if="error" class="flex flex-col items-start gap-2 text-red-700">
+      <p class="m-0">Nie udało się pobrać komentarzy.</p>
+      <button
+        type="button"
+        class="px-3.5 py-1.5 rounded-lg border border-gray-200 bg-white hover:bg-gray-100 hover:border-blue-600 transition focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-500/40"
+        @click="refresh()"
+      >
+        Spróbuj ponownie
+      </button>
+    </div>
+
+    <p v-else-if="comments.length === 0" class="m-0 text-gray-500">
+      Brak komentarzy do tego zdjęcia.
+    </p>
+
+    <div v-else class="flex flex-col gap-6">
       <div v-for="comment in comments" :key="comment.id">
         <div class="flex gap-4">
           <img
