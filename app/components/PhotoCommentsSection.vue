@@ -39,7 +39,7 @@ const isLoading = computed(
 
 <template>
   <section
-    class="bg-white border border-gray-200 rounded-xl p-6 sm:p-8 shadow-sm"
+    class="bg-white border border-gray-200 rounded-xl p-6 shadow-sm"
     aria-labelledby="comments-heading"
   >
     <h2 id="comments-heading" class="text-lg font-semibold mb-4 mt-0">
