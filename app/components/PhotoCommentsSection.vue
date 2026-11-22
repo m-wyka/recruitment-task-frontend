@@ -28,26 +28,13 @@ const { data, status, error, refresh } = useFetch('/api/comments.json', {
   default: () => []
 })
 
-const comments = computed(() =>
-  data.value
-    .filter((comment) => comment.photoId === props.photoId)
-    .sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt))
-)
+const comments = computed(() => getCommentsForPhoto(data.value, props.photoId))
 
 // Przy `server: false` serwer renderuje komponent w stanie `idle`. Traktujemy go
 // jak ładowanie, żeby przed pobraniem danych nie mignął pusty stan.
 const isLoading = computed(
   () => status.value === 'idle' || status.value === 'pending'
 )
-
-// Jeden formatter dla wszystkich komentarzy, np. "16.08.2026".
-const dateFormatter = new Intl.DateTimeFormat('pl-PL', {
-  day: '2-digit',
-  month: '2-digit',
-  year: 'numeric'
-})
-
-const formatDate = (isoDate) => dateFormatter.format(new Date(isoDate))
 </script>
 
 <template>
@@ -101,7 +88,7 @@ const formatDate = (isoDate) => dateFormatter.format(new Date(isoDate))
                 {{ comment.author }}
               </span>
               <time :datetime="comment.createdAt" class="text-sm text-gray-500">
-                {{ formatDate(comment.createdAt) }}
+                {{ formatCommentDate(comment.createdAt) }}
               </time>
             </div>
             <p class="text-gray-800">{{ comment.content }}</p>
