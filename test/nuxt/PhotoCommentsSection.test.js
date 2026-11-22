@@ -42,6 +42,7 @@ const mountSection = async (photoId = '1') => {
 }
 
 const isLoading = () => wrapper.find('[role="status"]').exists()
+const commentItems = () => wrapper.findAll('ul[role="list"] > li')
 
 // Odpowiedź przechodzi przez kilka kroków asynchronicznych (handler → fetch →
 // useFetch), więc czekamy na zniknięcie stanu ładowania zamiast zgadywać,
@@ -70,20 +71,31 @@ describe('PhotoCommentsSection', () => {
     release()
     await waitForLoaded()
 
-    expect(wrapper.findAll('time')).toHaveLength(2)
+    expect(commentItems()).toHaveLength(2)
   })
 
-  it('renders only comments of the given photo, newest first', async () => {
+  it('renders only comments of the given photo as list items, newest first', async () => {
     await mountSection('1')
     await waitForLoaded()
 
-    const text = wrapper.text()
-    expect(text).toContain('Nowszy komentarz')
-    expect(text).toContain('Starszy komentarz')
-    expect(text).not.toContain('Komentarz do innego zdjęcia')
-    expect(text.indexOf('Piotr Nowak')).toBeLessThan(
-      text.indexOf('Marta Lewandowska')
-    )
+    const items = commentItems()
+    expect(items).toHaveLength(2)
+    expect(items[0].text()).toContain('Piotr Nowak')
+    expect(items[0].text()).toContain('Nowszy komentarz')
+    expect(items[1].text()).toContain('Marta Lewandowska')
+    expect(items[1].text()).toContain('Starszy komentarz')
+    expect(wrapper.text()).not.toContain('Komentarz do innego zdjęcia')
+  })
+
+  it('marks avatars as decorative, since the author name is next to them', async () => {
+    await mountSection('1')
+    await waitForLoaded()
+
+    const avatars = wrapper.findAll('li img')
+    expect(avatars).toHaveLength(2)
+    for (const avatar of avatars) {
+      expect(avatar.attributes('alt')).toBe('')
+    }
   })
 
   it('shows the formatted date and keeps the ISO date in datetime', async () => {
@@ -100,7 +112,7 @@ describe('PhotoCommentsSection', () => {
     await waitForLoaded()
 
     expect(wrapper.text()).toContain('Brak komentarzy do tego zdjęcia.')
-    expect(wrapper.findAll('time')).toHaveLength(0)
+    expect(wrapper.find('ul').exists()).toBe(false)
   })
 
   it('shows an error state and refetches after clicking retry', async () => {
@@ -118,7 +130,7 @@ describe('PhotoCommentsSection', () => {
 
     // Czekamy na stan końcowy, a nie na zniknięcie ładowania — po kliknięciu
     // ładowanie mogłoby jeszcze się nie pojawić.
-    await vi.waitFor(() => expect(wrapper.findAll('time')).toHaveLength(2))
+    await vi.waitFor(() => expect(commentItems()).toHaveLength(2))
     expect(wrapper.text()).not.toContain('Nie udało się pobrać komentarzy.')
   })
 })
