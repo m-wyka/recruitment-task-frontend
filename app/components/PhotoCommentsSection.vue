@@ -39,6 +39,15 @@ const comments = computed(() =>
 const isLoading = computed(
   () => status.value === 'idle' || status.value === 'pending'
 )
+
+// Jeden formatter dla wszystkich komentarzy, np. "16.08.2026".
+const dateFormatter = new Intl.DateTimeFormat('pl-PL', {
+  day: '2-digit',
+  month: '2-digit',
+  year: 'numeric'
+})
+
+const formatDate = (isoDate) => dateFormatter.format(new Date(isoDate))
 </script>
 
 <template>
@@ -92,7 +101,7 @@ const isLoading = computed(
                 {{ comment.author }}
               </span>
               <time :datetime="comment.createdAt" class="text-sm text-gray-500">
-                {{ comment.createdAt }}
+                {{ formatDate(comment.createdAt) }}
               </time>
             </div>
             <p class="text-gray-800">{{ comment.content }}</p>
