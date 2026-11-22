@@ -1,6 +1,10 @@
 import { defineConfig } from 'vitest/config'
 import { defineVitestProject } from '@nuxt/test-utils/config'
 
+// Daty są formatowane w strefie czasowej użytkownika — w testach ustawiamy ją
+// na sztywno, żeby wynik nie zależał od maszyny, na której są uruchamiane.
+process.env.TZ = 'Europe/Warsaw'
+
 export default defineConfig({
   test: {
     projects: [
