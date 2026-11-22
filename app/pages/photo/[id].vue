@@ -62,13 +62,6 @@ useHead(() => ({
       - zadbaj o stany: ładowanie, błąd, brak komentarzy
       ===========================================================================
     -->
-    <section class="bg-white border border-dashed border-gray-300 rounded-xl p-6 sm:p-8 text-center">
-      <h2 class="text-lg font-semibold mb-2 mt-0">Komentarze</h2>
-      <p class="text-gray-500 m-0">
-        Tutaj kandydat powinien zaimplementować pobieranie i wyświetlanie
-        komentarzy z
-        <code class="bg-gray-100 px-1.5 py-0.5 rounded text-sm">/api/comments.json</code>.
-      </p>
-    </section>
+    <PhotoCommentsSection :photo-id="photoId" />
   </section>
 </template>
